@@ -1,0 +1,59 @@
+:root {
+    box-sizing: border-box;
+}
+
+html, 
+body, 
+* {
+    margin: 0;
+    padding: 0;
+}
+
+#app {
+    height: 100vh;
+}
+
+.summary {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin: 0 auto;
+    border: 3px solid burlywood; 
+    width: 500px;
+    height: 500px;
+}
+
+.games {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.skill {
+    width: 20%;
+    margin: 5px 10px;
+    padding: 5px;
+    text-align: center;
+    font-size: 30px;
+    background-color: grey;
+}
+
+.skill:hover {
+    cursor: pointer;
+    background-color: tan;
+    transition: cubic-bezier(0.215, 0.610, 0.355, 1) ease-in-out;
+    transform: scale(120%);
+    -webkit-transform: scale(120%);
+    -moz-transform: scale(120%);
+    -ms-transform: scale(120%);
+    -o-transform: scale(120%);
+    -webkit-transition: cubic-bezier(0.215, 0.610, 0.355, 1) ease-in-out;
+    -moz-transition: cubic-bezier(0.215, 0.610, 0.355, 1) ease-in-out;
+    -ms-transition: cubic-bezier(0.215, 0.610, 0.355, 1) ease-in-out;
+    -o-transition: cubic-bezier(0.215, 0.610, 0.355, 1) ease-in-out;
+}
+
+.title {
+    text-align: center;
+}

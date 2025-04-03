@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Demo Games</title>
+</head>
+<body>
+    <div id="app">
+        <div class="summary">
+            <h1 class="title">MATCH RESULT</h1>
+            <br />
+            <h3 id="inGame"></h3>
+            <h3 id="result"></h3>
+        </div>
+        <div class="games">
+            <div class="skill" onclick="pickSkill('Fire')">Fire</div>
+            <div class="skill" onclick="pickSkill('Water')">Water</div>
+            <div class="skill" onclick="pickSkill('Earth')">Earth</div>
+            <div class="skill" onclick="pickSkill('Wind')">Wind</div>
+        </div>
+    </div>
+
+    <script>
+        class Start {
+            constructor(parameter) {
+                this.playerName = "Rathx"
+                this.botName = "Enemy"
+                this.playerSkill;
+                this.botSkill;
+                this.winner = ""
+            }
+
+            get getplayerSkill() {
+                return this.playerSkill;
+            }
+
+            set setplayerSkill (skill) {
+                this.playerSkill = skill;
+            }
+
+            get getbotSkill() {
+                return this.botSkill;
+            }
+
+            set setbotSkill(skill) {
+                this.botSkill = skill;
+            }
+
+            botBrain() {
+                const skill = ["Fire", "Water", "Earth", "Wind"];
+                const bot = skill[Math.floor(Math.random() * skill.length)];
+                return bot;
+            }
+
+            winCalculation() {
+                if (this.botSkill == "Fire" && this.playerSkill == "Wind") {
+                    return this.winner = this.botName
+                } else if(this.botSkill == "Wind" && this.playerSkill == "Fire") {
+                    return this.winner = this.playerName
+                } else if(this.botSkill == "Water" && this.playerSkill == "Fire") {
+                    return this.winner = this.botName
+                } else if(this.botSkill == "Fire" && this.playerSkill == "Water") {
+                    return this.winner = this.playerName
+                } else if(this.botSkill == "Earth" && this.playerSkill == "Water") {
+                    return this.winner = this.botName
+                } else if(this.botSkill == "Water" && this.playerSkill == "Earth") {
+                    return this.winner = this.playerName
+                } else if(this.botSkill == "Wind" && this.playerSkill == "Earth") {
+                    return this.winner = this.botName
+                } else if(this.botSkill == "Earth" && this.playerSkill == "Wind") {
+                    return this.winner = this.playerName
+                } else {
+                    return this.winner = "DRAW"
+                }
+            }
+
+            matchResult(){
+                if(this.winner !== "DRAW"){
+                    return `CONGRATS ${this.winner} WIN!`;
+                }else {
+                    return `INTERESTING, BUT STILL ${this.winner},`;
+                }
+            }
+
+        }
+
+        function pickSkill(parameter) {
+            const start = new Start();
+            start.setplayerSkill = parameter;
+            start.setbotSkill = start.botBrain();
+            start.winCalculation();
+            console.log(`player: ${start.getplayerSkill} VS bot: ${start.getbotSkill}`);
+            console.log("winner = ", start.winner);
+            console.log("result: ", start.matchResult());
+
+            const inGame = document.getElementById("inGame");
+            const result = document.getElementById("result");
+
+            inGame.textContent = "..."
+            result.textContent = "..."
+
+        setTimeout(() => {
+            inGame.textContent =`${start.getplayerSkill} VS ${start.getbotSkill}`;
+            result.textContent = start.matchResult();
+        }, 1000);
+        }
+    </script>
+    
+</body>
+</html>
