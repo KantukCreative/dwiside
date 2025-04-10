@@ -2,11 +2,16 @@
     box-sizing: border-box;
 }
 
+*, *::before, *::after {
+    box-sizing: inherit;
+}
+
 html, 
 body, 
 * {
     margin: 0;
     padding: 0;
+    outline: 0px solid blue;
 }
 
 #app {
@@ -14,34 +19,58 @@ body,
 }
 
 .summary {
+    font-size: 20px;
+    color: red;
     display: flex;
-    justify-content: center;
     align-items: center;
     flex-direction: column;
     margin: 0 auto;
-    border: 3px solid burlywood; 
-    width: 500px;
-    height: 500px;
+    border: 1px solid rgb(0, 0, 0); 
+    width: 800px;
+    height: 300px;
 }
 
 .games {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: row;
+    margin-top: 10px;
+    margin: 0 auto;
+    border: 1px solid rgb(0, 0, 0); 
+    width: 800px;
+    height: 30px;
+    text-align: left;
+    font-size: 20px;
 }
 
 .skill {
-    width: 20%;
+    display: flex;
     margin: 5px 10px;
-    padding: 5px;
+    padding: 0px;
     text-align: center;
-    font-size: 30px;
+    font-size: 20px;
     background-color: grey;
+}
+
+.games .skill:nth-child(1):hover {
+    background-color: red;
+}
+
+.games .skill:nth-child(2):hover {
+    background-color: rgb(0, 174, 255);
+}
+
+.games .skill:nth-child(3):hover {
+    background-color: rgb(68, 39, 0);
+}
+
+.games .skill:nth-child(4):hover {
+    background-color: rgb(13, 255, 0);
 }
 
 .skill:hover {
     cursor: pointer;
-    background-color: tan;
     transition: cubic-bezier(0.215, 0.610, 0.355, 1) ease-in-out;
     transform: scale(120%);
     -webkit-transform: scale(120%);

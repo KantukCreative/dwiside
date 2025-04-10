@@ -9,12 +9,18 @@
 <body>
     <div id="app">
         <div class="summary">
-            <h1 class="title">MATCH RESULT</h1>
+            <h1 class="title">BATTLE START</h1>
             <br />
             <h3 id="inGame"></h3>
             <h3 id="result"></h3>
+        <div class="hpbar-container">
+            <div id="playerhpbar" class="hpbar">1000 HP</div>
         </div>
-        <div class="games">
+        <div class="hpbar-container">
+            <div id="bothpbar" class="hpbar">1000 HP</div>
+        </div>
+        </div>
+        <div class="games">What Will You do?                             
             <div class="skill" onclick="pickSkill('Fire')">Fire</div>
             <div class="skill" onclick="pickSkill('Water')">Water</div>
             <div class="skill" onclick="pickSkill('Earth')">Earth</div>
@@ -25,7 +31,7 @@
     <script>
         class Start {
             constructor(parameter) {
-                this.playerName = "Rathx"
+                this.playerName = "DONTOL"
                 this.botName = "Enemy"
                 this.playerSkill;
                 this.botSkill;
