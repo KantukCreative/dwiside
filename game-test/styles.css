@@ -19,15 +19,40 @@ body,
 }
 
 .summary {
+    background-image: url();
     font-size: 20px;
-    color: red;
+    color: rgb(0, 0, 0);
     display: flex;
     align-items: center;
     flex-direction: column;
     margin: 0 auto;
     border: 1px solid rgb(0, 0, 0); 
-    width: 800px;
-    height: 300px;
+    width: 1000px;
+    height: 400px;
+}
+
+.hpbar-container {
+    width: 300px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    justify-content: center;
+}
+
+.hpbar {
+    height: 20px;
+    border-radius: 5px;
+    text-align: center;
+    align-items: center;
+    color: rgb(0, 0, 0);
+    font-weight: bold;
+}
+
+#playerhpbar {
+    background-color: blue;
+}
+
+#bothpbar {
+    background-color: red;
 }
 
 .games {
@@ -38,7 +63,7 @@ body,
     margin-top: 10px;
     margin: 0 auto;
     border: 1px solid rgb(0, 0, 0); 
-    width: 800px;
+    width: 1000px;
     height: 30px;
     text-align: left;
     font-size: 20px;

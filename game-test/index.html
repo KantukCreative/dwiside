@@ -13,12 +13,12 @@
             <br />
             <h3 id="inGame"></h3>
             <h3 id="result"></h3>
-        <div class="hpbar-container">
-            <div id="playerhpbar" class="hpbar">1000 HP</div>
-        </div>
-        <div class="hpbar-container">
-            <div id="bothpbar" class="hpbar">1000 HP</div>
-        </div>
+            <div class="hpbar-container">DONTOL HP
+                <div id="playerhpbar" class="hpbar">2000</div>
+            </div>
+            <div class="hpbar-container">BOT HP
+                <div id="bothpbar" class="hpbar">2000</div>
+            </div>
         </div>
         <div class="games">What Will You do?                             
             <div class="skill" onclick="pickSkill('Fire')">Fire</div>
@@ -31,11 +31,14 @@
     <script>
         class Start {
             constructor(parameter) {
-                this.playerName = "DONTOL"
-                this.botName = "Enemy"
+                this.playerName = "DONTOL";
+                this.botName = "RAHJANG";
                 this.playerSkill;
                 this.botSkill;
-                this.winner = ""
+                this.winner = "";
+                this.playerHP = 2000;
+                this.botHP = 2000;
+                this.consecutiveDraw = 0;
             }
 
             get getplayerSkill() {
@@ -61,57 +64,140 @@
             }
 
             winCalculation() {
+                const damage = 100;
                 if (this.botSkill == "Fire" && this.playerSkill == "Wind") {
-                    return this.winner = this.botName
+                    this.botHP -= damage * 0.5;
+                    this.playerHP -= damage * 2;
+                    this.winner = this.botName
                 } else if(this.botSkill == "Wind" && this.playerSkill == "Fire") {
-                    return this.winner = this.playerName
+                    this.botHP -= damage * 2;
+                    this.playerHP -= damage * 0.5;
+                    this.winner = this.playerName
                 } else if(this.botSkill == "Water" && this.playerSkill == "Fire") {
-                    return this.winner = this.botName
+                    this.botHP -= damage * 0.5;
+                    this.playerHP -= damage * 2;
+                    this.winner = this.botName
                 } else if(this.botSkill == "Fire" && this.playerSkill == "Water") {
-                    return this.winner = this.playerName
+                    this.botHP -= damage * 2;
+                    this.playerHP -= damage * 0.5;
+                    this.winner = this.playerName
                 } else if(this.botSkill == "Earth" && this.playerSkill == "Water") {
-                    return this.winner = this.botName
+                    this.botHP -= damage * 0.5;
+                    this.playerHP -= damage * 2;
+                    this.winner = this.botName
                 } else if(this.botSkill == "Water" && this.playerSkill == "Earth") {
-                    return this.winner = this.playerName
+                    this.botHP -= damage * 2;
+                    this.playerHP -= damage * 0.5;
+                    this.winner = this.playerName
                 } else if(this.botSkill == "Wind" && this.playerSkill == "Earth") {
-                    return this.winner = this.botName
+                    this.botHP -= damage * 0.5;
+                    this.playerHP -= damage * 2;
+                    this.winner = this.botName
                 } else if(this.botSkill == "Earth" && this.playerSkill == "Wind") {
-                    return this.winner = this.playerName
+                    this.botHP -= damage * 2;
+                    this.playerHP -= damage * 0.5;
+                    this.winner = this.playerName
+                } else if(this.botSkill == "Fire" && this.playerSkill == "Earth") {
+                    this.botHP -= damage;
+                    this.playerHP -= damage;
+                    this.winner = "DOUBLE "
+                } else if(this.botSkill == "Earth" && this.playerSkill == "Fire") {
+                    this.botHP -= damage;
+                    this.playerHP -= damage;
+                    this.winner = "DOUBLE "
+                } else if(this.botSkill == "Wind" && this.playerSkill == "Water") {
+                    this.botHP -= damage;
+                    this.playerHP -= damage;
+                    this.winner = "DOUBLE "
+                } else if(this.botSkill == "Water" && this.playerSkill == "Wind") {
+                    this.botHP -= damage;
+                    this.playerHP -= damage;
+                    this.winner = "DOUBLE "
                 } else {
-                    return this.winner = "DRAW"
+                    this.botHP -= damage;
+                    this.playerHP -= damage;
+                    this.winner = "DRAW"
                 }
+
+                if (this.winner === "DRAW") {
+                    this.consecutiveDraw += 1;
+                } else {
+                    this.consecutiveDraw = 0;
+                }
+                return this.winner
             }
 
             matchResult(){
                 if(this.winner !== "DRAW"){
-                    return `CONGRATS ${this.winner} WIN!`;
+                    return `${this.winner} ATTACK!`;
                 }else {
-                    return `INTERESTING, BUT STILL ${this.winner},`;
+                    return `${this.winner}`;
                 }
+            }
+
+            updateHealthBars() {
+            const playerBar = document.getElementById("playerhpbar");
+            const enemyBar = document.getElementById("bothpbar");
+            playerBar.textContent = this.playerHP;
+            enemyBar.textContent = this.botHP;
+            playerBar.style.width = (this.playerHP / 2000 * 100) + "%";
+            enemyBar.style.width = (this.botHP / 2000 * 100) + "%";
             }
 
         }
 
+        const game = new Start();
+        game.updateHealthBars();
+
+        //baru//
+        function changeGameSettingDraw() {
+            const gamesDiv = document.querySelector(".games");
+            gamesDiv.innerHTML = `
+        <p>You have been transported to a different realm!</p>
+        <div class="skill" onclick="pickSkill('Dre')">Dre</div>
+        <div class="skill" onclick="pickSkill('Rea')">Rea</div>
+        <div class="skill" onclick="pickSkill('Ilu')">Ilu</div>
+        `;    
+        }
+
         function pickSkill(parameter) {
-            const start = new Start();
-            start.setplayerSkill = parameter;
-            start.setbotSkill = start.botBrain();
-            start.winCalculation();
-            console.log(`player: ${start.getplayerSkill} VS bot: ${start.getbotSkill}`);
-            console.log("winner = ", start.winner);
-            console.log("result: ", start.matchResult());
+            game.setplayerSkill = parameter;
+            game.setbotSkill = game.botBrain();
+            game.winCalculation();
+            game.updateHealthBars();
+
+            console.log(`player: ${game.getplayerSkill} VS bot: ${game.getbotSkill}`);
+            console.log("winner = ", game.winner);
+            console.log("consecutiveDraw:", game.consecutiveDraw);
+            console.log("result: ", game.matchResult());
 
             const inGame = document.getElementById("inGame");
             const result = document.getElementById("result");
 
             inGame.textContent = "..."
             result.textContent = "..."
+        
+            setTimeout(() => {
+                inGame.textContent =`${game.getplayerSkill} VS ${game.getbotSkill}`;
+                result.textContent = game.matchResult();
 
-        setTimeout(() => {
-            inGame.textContent =`${start.getplayerSkill} VS ${start.getbotSkill}`;
-            result.textContent = start.matchResult();
+                if (game.playerHP <= 0 || game.botHP <= 0) {
+                    gameOver();
+                    return;
+                }
+
+                if (game.consecutiveDraw >= 2) {
+                changeGameSettingDraw();
+                game.consecutiveDraw = 0;
+            }
         }, 1000);
-        }
+    }
+
+    function gameOver() {
+    alert("Game Over!");
+    document.getElementById("result").innerHTML ="<p>GAME OVER!</p>";
+    }
+
     </script>
     
 </body>
