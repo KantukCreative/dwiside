@@ -172,7 +172,7 @@
                     this.winner = this.botName
                     } else if(this.botSkill == "Ilu" && this.playerSkill == "Rea") {
                     this.botHP -= damage * 2;
-                    this.playerHP -= damage * 1;
+                    this.playerHP += damage * 1;
                     this.winner = this.playerName
                     } else if(this.botSkill == "Ilu" && this.playerSkill == "Dre") {
                     this.botHP += damage * 1;
@@ -180,7 +180,7 @@
                     this.winner = this.botName
                     } else if(this.botSkill == "Dre" && this.playerSkill == "Ilu") {
                     this.botHP -= damage * 2;
-                    this.playerHP -= damage * 1;
+                    this.playerHP += damage * 1;
                     this.winner = this.playerName
                     } else if(this.botSkill == "Dre" && this.playerSkill == "Rea") {
                     this.botHP += damage * 1;
@@ -188,7 +188,7 @@
                     this.winner = this.botName
                     } else if(this.botSkill == "Rea" && this.playerSkill == "Dre") {
                     this.botHP -= damage * 2;
-                    this.playerHP -= damage * 1;
+                    this.playerHP += damage * 1;
                     this.winner = this.playerName
                     } else {
                     this.botHP -= damage;
