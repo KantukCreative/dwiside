@@ -48,7 +48,7 @@ body,
     margin-bottom: 5px;
     border: 1px solid rgb(0, 0, 0); 
     width: 1000px;
-    height: 600px;
+    height: 400px;
     transition: 
     background-image 4s ease; 
 }
@@ -90,24 +90,32 @@ body,
     margin: 0 auto;
     border: 5px solid rgb(0, 0, 0); 
     width: 1000px;
-    height: 40px;
+    height: 150px;
     text-align: left;
+    color: rgb(255, 255, 255);
     font-size: 20px;
-    background-color: white;
+    background-color: rgb(0, 0, 0);
 }
 
 .skill {
-    border: 2px solid rgb(0, 0, 0);
+    border: 2px solid rgb(255, 255, 255);
     padding: 8px 12px;
     margin: 5px;
-    border-radius: 8px;
+    border-radius: 20px;
     cursor: pointer;
     color: white;
     font-weight: bold;
     text-align: center;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    align-items: center;
 }
 
+.skill-icon {
+    width: 90px;
+    height: 90px;
+    object-fit: contain;
+}
 .skill.fire { background-color: crimson; }
 .skill.wind { background-color: mediumseagreen; }
 .skill.water { background-color: dodgerblue; }
@@ -115,6 +123,7 @@ body,
 .skill.rea { background-color:powderblue; }
 .skill.ilu { background-color: violet; }
 .skill.dre { background-color: teal; }
+
 
 .skill:hover {
     cursor: pointer;
