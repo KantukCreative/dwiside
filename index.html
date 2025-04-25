@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Demo Games</title>
+</head>
+<body>
+    <div id="app">
+        <div class="summary magician-mode">
+            <h1 class="title">BATTLE START</h1>
+            <h3 id="inGame"></h3>
+            <h3 id="result"></h3>
+            <br />
+            <div class="hpbar-container">Player HP
+                <div id="playerhpbar" class="hpbar">2000</div>
+            </div>
+            <div class="hpbar-container">Bot HP
+                <div id="bothpbar" class="hpbar">2000</div>
+            </div>
+        </div>
+        <div class="games" id="skillsContainer"></div>
+    </div>
+
+    <script>
+        class Start {
+            constructor(parameter) {
+                this.playerName = "Player";
+                this.botName = "Enemy";
+                this.playerSkill;
+                this.botSkill;
+                this.winner = "";
+                this.playerHP = 2000;
+                this.botHP = 2000;
+                this.consecutiveDraw = 0;
+                this.mode = "magician"; // "magician" or "alter"
+                this.skillUsage = {
+                    player: {
+                        magician: { Fire: 4, Wind: 4, Water: 4, Earth: 4 },
+                        alter: { Rea: 3, Ilu: 3, Dre: 3 }
+                    },
+                    bot: {
+                        magician: { Fire: 4, Wind: 4, Water: 4, Earth: 4 },
+                        alter: { Rea: 3, Ilu: 3, Dre: 3 }
+                    }
+                };
+            }
+
+            get getplayerSkill() {
+                return this.playerSkill;
+            }
+
+            get getbotSkill() {
+                return this.botSkill;
+            }
+
+            set setplayerSkill(value) {
+                this.playerSkill = value;
+            }
+
+            set setbotSkill(value) {
+                this.botSkill = value;
+            }
+
+            getAvailableSkills() {
+                const usage = this.skillUsage.player[this.mode];
+                return Object.entries(usage)
+                    .filter(([_, count]) => count > 0)
+                    .map(([skill]) => skill);
+            }
+            
+            updateSkillButtons() {
+                const cont = document.getElementById("skillsContainer");
+                cont.innerHTML = `<p>What Will You do?...</p>`;
+                this.getAvailableSkills().forEach(skill => {
+                    const btn = document.createElement("div");
+                    btn.className = `skill ${skill.toLowerCase()}`;
+                    btn.textContent = `${skill} (${this.skillUsage.player[this.mode][skill]})`;
+                    btn.onclick = () => pickSkill(skill);
+                    cont.appendChild(btn);
+                });
+            }
+
+            switchMode() {
+                this.mode = this.mode === "magician" ? "alter" : "magician";
+                const summaryDiv = document.querySelector(".summary");
+                summaryDiv.classList.remove("magician-mode", "alter-mode");
+                summaryDiv.classList.add(this.mode + "-mode");
+
+                if (this.mode === "magician") {
+                    this.skillUsage.player.magician = { Fire:4, Wind:4, Water:4, Earth:4 };
+                    this.skillUsage.bot.magician = { Fire:4, Wind:4, Water:4, Earth:4 };
+                } else {
+                    this.skillUsage.player.alter = { Rea:3, Ilu:3, Dre:3 };
+                    this.skillUsage.bot.alter = { Rea:3, Ilu:3, Dre:3 };
+                }
+                
+                this.consecutiveDraw = 0;
+                this.updateSkillButtons();
+            }
+
+            botBrain() {
+                const usage = this.skillUsage.bot[this.mode];
+                const available = Object.entries(usage)
+                    .filter(([_, count]) => count > 0)
+                    .map(([skill]) => skill);
+                return available[Math.floor(Math.random() * available.length)];
+            }
+
+            winCalculation() {
+                const damage = 100;
+                if (this.mode === "magician") {
+                    if (this.botSkill == "Fire" && this.playerSkill == "Wind") {
+                    this.botHP -= damage * 0.5;
+                    this.playerHP -= damage * 2;
+                    this.winner = this.botName
+                    } else if(this.botSkill == "Wind" && this.playerSkill == "Fire") {
+                    this.botHP -= damage * 2;
+                    this.playerHP -= damage * 0.5;
+                    this.winner = this.playerName
+                    } else if(this.botSkill == "Water" && this.playerSkill == "Fire") {
+                    this.botHP -= damage * 0.5;
+                    this.playerHP -= damage * 2;
+                    this.winner = this.botName
+                    } else if(this.botSkill == "Fire" && this.playerSkill == "Water") {
+                    this.botHP -= damage * 2;
+                    this.playerHP -= damage * 0.5;
+                    this.winner = this.playerName
+                    } else if(this.botSkill == "Earth" && this.playerSkill == "Water") {
+                    this.botHP -= damage * 0.5;
+                    this.playerHP -= damage * 2;
+                    this.winner = this.botName
+                    } else if(this.botSkill == "Water" && this.playerSkill == "Earth") {
+                    this.botHP -= damage * 2;
+                    this.playerHP -= damage * 0.5;
+                    this.winner = this.playerName
+                    } else if(this.botSkill == "Wind" && this.playerSkill == "Earth") {
+                    this.botHP -= damage * 0.5;
+                    this.playerHP -= damage * 2;
+                    this.winner = this.botName
+                    } else if(this.botSkill == "Earth" && this.playerSkill == "Wind") {
+                    this.botHP -= damage * 2;
+                    this.playerHP -= damage * 0.5;
+                    this.winner = this.playerName
+                    } else if(this.botSkill == "Fire" && this.playerSkill == "Earth") {
+                    this.botHP -= damage;
+                    this.playerHP -= damage;
+                    this.winner = "DOUBLE "
+                    } else if(this.botSkill == "Earth" && this.playerSkill == "Fire") {
+                    this.botHP -= damage;
+                    this.playerHP -= damage;
+                    this.winner = "DOUBLE "
+                    } else if(this.botSkill == "Wind" && this.playerSkill == "Water") {
+                    this.botHP -= damage;
+                    this.playerHP -= damage;
+                    this.winner = "DOUBLE "
+                    } else if(this.botSkill == "Water" && this.playerSkill == "Wind") {
+                    this.botHP -= damage;
+                    this.playerHP -= damage;
+                    this.winner = "DOUBLE "
+                    } else {
+                    this.botHP -= damage;
+                    this.playerHP -= damage;
+                    this.winner = "DRAW"
+                    }
+                }
+                if (this.mode === "alter") {
+                    if (this.botSkill == "Rea" && this.playerSkill == "Ilu") {
+                    this.botHP += damage * 1;
+                    this.playerHP -= damage * 2;
+                    this.winner = this.botName
+                    } else if(this.botSkill == "Ilu" && this.playerSkill == "Rea") {
+                    this.botHP -= damage * 2;
+                    this.playerHP += damage * 1;
+                    this.winner = this.playerName
+                    } else if(this.botSkill == "Ilu" && this.playerSkill == "Dre") {
+                    this.botHP += damage * 1;
+                    this.playerHP -= damage * 2;
+                    this.winner = this.botName
+                    } else if(this.botSkill == "Dre" && this.playerSkill == "Ilu") {
+                    this.botHP -= damage * 2;
+                    this.playerHP += damage * 1;
+                    this.winner = this.playerName
+                    } else if(this.botSkill == "Dre" && this.playerSkill == "Rea") {
+                    this.botHP += damage * 1;
+                    this.playerHP -= damage * 2;
+                    this.winner = this.botName
+                    } else if(this.botSkill == "Rea" && this.playerSkill == "Dre") {
+                    this.botHP -= damage * 2;
+                    this.playerHP += damage * 1;
+                    this.winner = this.playerName
+                    } else {
+                    this.botHP -= damage;
+                    this.playerHP -= damage;
+                    this.winner = "DRAW"
+                    }
+                }  
+
+                if (this.winner === "DRAW") {
+                    this.consecutiveDraw += 1;
+                } else {
+                    this.consecutiveDraw = 0;
+                }
+                return this.winner
+            }
+
+            matchResult(){
+                if(this.winner !== "DRAW"){
+                    return `${this.winner} ATTACK!`;
+                }else {
+                    return `${this.winner}`;
+                }
+            }
+
+            updateHealthBars() {
+            this.playerHP = Math.max(0, this.playerHP); 
+            this.botHP = Math.max(0, this.botHP);       
+            const playerBar = document.getElementById("playerhpbar");
+            const enemyBar = document.getElementById("bothpbar");
+            playerBar.textContent = this.playerHP;
+            enemyBar.textContent = this.botHP;
+            playerBar.style.width = (this.playerHP / 2000 * 100) + "%";
+            enemyBar.style.width = (this.botHP / 2000 * 100) + "%";
+            }
+        }
+
+        const game = new Start();
+        game.updateHealthBars();
+        game.updateSkillButtons();
+
+        function pickSkill(parameter) {
+        // sisa skill
+        if (game.skillUsage.player[game.mode][parameter] <= 0) return;
+
+        // penggunaan skill player
+        game.skillUsage.player[game.mode][parameter]--;
+        game.setplayerSkill = parameter;
+        
+        // pilih skill bot
+        const botSkill = game.botBrain();
+        game.setbotSkill = game.botBrain();
+
+        // penggunaan skill bot
+        if (game.skillUsage.bot[game.mode][botSkill] > 0)
+        game.skillUsage.bot[game.mode][botSkill]--;
+
+      // initial console
+      console.log(`player: ${game.getplayerSkill} VS bot: ${game.getbotSkill}`);
+
+      // calculate
+      const win = game.winCalculation();
+      console.log(`winner = ${win}`);
+      console.log(`consecutiveDraw: ${game.consecutiveDraw}`);
+      console.log(`result = ${game.matchResult()}`);
+
+      // update UI
+      game.updateHealthBars();
+      document.getElementById("inGame").textContent = "...";
+      document.getElementById("result").textContent = "...";
+
+      setTimeout(() => {
+        document.getElementById("inGame").textContent =
+          `${game.getplayerSkill} VS ${game.getbotSkill}`;
+        document.getElementById("result").textContent = game.matchResult();
+
+        // end conditions or mode switch
+        if (game.playerHP === 0 || game.botHP === 0) {
+            document.getElementById('result').textContent = (game.playerHP === 0)
+            ? `${game.botName} has won the battle!` 
+            : `${game.playerName} has won the battle!`;
+          document.getElementById("skillsContainer").innerHTML = "<p>GAME OVER</p>";
+          return;
+        }
+        if (game.consecutiveDraw >= 2) {
+          alert('There is a dimensional rift, watch your step.');
+          game.switchMode();
+          return;
+        }
+        if (game.mode === 'alter' && game.getAvailableSkills().length === 0) {
+          alert('There is a dimensional rift, watch your step.');
+          game.switchMode();
+          return;
+        }
+        if (game.mode === 'magician') {
+          const total = Object.values(game.skillUsage.player.magician)
+            .reduce((a,b)=>a+b,0);
+          if (total === 0) {
+            alert('Game Over!.');
+            document.getElementById("skillsContainer").innerHTML = "<p>GAME OVER</p>";
+            return;
+          }
+        }
+        game.updateSkillButtons();
+      }, 1000);
+    }
+  </script>
+</body>
+</html>
