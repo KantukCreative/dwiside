@@ -76,7 +76,17 @@
                 this.getAvailableSkills().forEach(skill => {
                     const btn = document.createElement("div");
                     btn.className = `skill ${skill.toLowerCase()}`;
-                    btn.textContent = `${skill} (${this.skillUsage.player[this.mode][skill]})`;
+                    
+                    const icon = document.createElement("img");
+                    icon.src       = `aset/${skill.toLowerCase()}.png`;
+                    icon.alt       = skill;
+                    icon.classList.add("skill-icon");
+
+                    const label = document.createElement("span");
+                    label.textContent = `${skill} (${this.skillUsage.player[this.mode][skill]})`;
+                    btn.appendChild(icon);
+                    btn.appendChild(label);
+
                     btn.onclick = () => pickSkill(skill);
                     cont.appendChild(btn);
                 });
