@@ -14,7 +14,7 @@
             <h3 id="result"></h3>
             <br />
             <div class="hpbar-container">Player HP
-                <div id="playerhpbar" class="hpbar">4000</div>
+                <div id="playerhpbar" class="hpbar">2000</div>
             </div>
             <div class="hpbar-container">Bot HP
                 <div id="bothpbar" class="hpbar">2000</div>
@@ -64,18 +64,31 @@
             }
 
             getAvailableSkills() {
-                const usage = this.skillUsage.player[this.mode];
-                return Object.entries(usage)
-                    .filter(([_, count]) => count > 0)
-                    .map(([skill]) => skill);
+                const availableSkills = {
+                    magician: ["Fire", "Wind", "Water", "Earth"],
+                    alter: ["Rea", "Ilu", "Dre"]
+                };
+    
+                return availableSkills[this.mode].filter(skill => 
+                this.skillUsage.player[this.mode][skill] > 0
+                );
             }
             
             updateSkillButtons() {
                 const cont = document.getElementById("skillsContainer");
-                cont.innerHTML = `<p>What Will You do?...</p>`;
+                cont.innerHTML = "";
+                cont.className = "games"; // Reset classes
+                cont.classList.add(this.mode + "-mode");
+                
                 this.getAvailableSkills().forEach(skill => {
                     const btn = document.createElement("div");
-                    btn.className = `skill ${skill.toLowerCase()}`;
+                    btn.classList.add("skill", skill.toLowerCase());
+
+                    const shapeMap = {
+                    Fire:  "triangle", Water: "square", Wind: "circle", Earth:  "cross",
+                    Rea: "top", Dre: "left", Ilu: "right"
+                    };
+                    btn.classList.add(shapeMap[skill]);
                     
                     const icon = document.createElement("img");
                     icon.src       = `aset/${skill.toLowerCase()}.png`;

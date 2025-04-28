@@ -15,7 +15,7 @@ body,
 }
 
 .summary.magician-mode { 
-    background-image: url("aset/bg-game.png"); 
+    background-image: url("aset/bg-game.png");
 }
 
 .summary.alter-mode { 
@@ -24,6 +24,10 @@ body,
 
 #app {
     height: 100vh;
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
 }
 
 .title {
@@ -36,21 +40,19 @@ body,
 }
 
 .summary {
+    height: 60vh;
+    width: 100%;
     background-image: url("aset/bg-game.png");
     background-position: center;
-    background-size: cover;
+    background-size:cover;
     background-repeat: no-repeat;
     color: rgb(255, 255, 255);
     display: flex;
     align-items: left;
     flex-direction: column;
     margin: 0 auto;
-    margin-bottom: 5px;
-    border: 1px solid rgb(0, 0, 0); 
-    width: 1000px;
-    height: 400px;
     transition: 
-    background-image 4s ease; 
+    background-image 4s ease,
 }
 
 .hpbar-container {
@@ -82,24 +84,42 @@ body,
 }
 
 .games {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: row;
-    margin-top: 10px;
+    display: grid;
+    grid-template-rows:    1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-areas:
+        ". triangle ."
+        "square . circle"
+        ". cross .";
+    height:40vh;
+    width: 100%;
+    gap: 0px;          
     margin: 0 auto;
-    border: 5px solid rgb(0, 0, 0); 
-    width: 1000px;
-    height: 150px;
-    text-align: left;
-    color: rgb(255, 255, 255);
-    font-size: 20px;
-    background-color: rgb(0, 0, 0);
+    overflow: auto;
 }
+
+.games.alter-mode {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    grid-template-areas:
+        ". top ."
+        "left . right";
+    height:40vh;
+    width: 100%;
+}
+
+.skill.triangle { grid-area: triangle; }
+.skill.square   { grid-area: square;   }
+.skill.circle   { grid-area: circle;   }
+.skill.cross    { grid-area: cross;    }
+.skill.rea      { grid-area: top;      }
+.skill.ilu      { grid-area: right;    }
+.skill.dre      { grid-area: left;     }
 
 .skill {
     border: 2px solid rgb(255, 255, 255);
-    padding: 8px 12px;
+    padding: 8px 8px;
     margin: 5px;
     border-radius: 20px;
     cursor: pointer;
@@ -112,8 +132,8 @@ body,
 }
 
 .skill-icon {
-    width: 90px;
-    height: 90px;
+    width: 50px;
+    height: 50px;
     object-fit: contain;
 }
 .skill.fire { background-color: crimson; }
@@ -123,7 +143,6 @@ body,
 .skill.rea { background-color:powderblue; }
 .skill.ilu { background-color: violet; }
 .skill.dre { background-color: teal; }
-
 
 .skill:hover {
     cursor: pointer;
