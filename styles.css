@@ -12,6 +12,7 @@ body,
     margin: 0;
     padding: 0;
     outline: 0px solid blue;
+    position: relative;
 }
 
 .summary.magician-mode { 
@@ -28,6 +29,7 @@ body,
     margin: 0 auto;
     display: flex;
     flex-direction: column;
+    position: relative;
 }
 
 .title {
@@ -83,18 +85,27 @@ body,
     border: 2px solid black;
 }
 
+#skill-hint {
+    position: absolute;
+    bottom: 200px; 
+    left: 20px;   
+    font-size: 18px;
+    font-weight: bold;
+    color: rgb(0, 0, 0); 
+}
+
 .games {
     display: grid;
-    grid-template-rows:    1fr 1fr 1fr;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: repeat(3, 1fr);
     grid-template-areas:
         ". triangle ."
         "square . circle"
         ". cross .";
-    height:40vh;
-    width: 100%;
-    gap: 0px;          
-    margin: 0 auto;
+    height: 40vh;
+    width: 35%;
+    justify-items: center;
+    align-items: center;
+    margin-left: auto;         
     overflow: auto;
 }
 
@@ -106,7 +117,10 @@ body,
         ". top ."
         "left . right";
     height:40vh;
-    width: 100%;
+    width: 35%;
+    justify-items: center;
+    align-items: center;
+    margin-left: auto;
 }
 
 .skill.triangle { grid-area: triangle; }
@@ -118,23 +132,24 @@ body,
 .skill.dre      { grid-area: left;     }
 
 .skill {
+    width: 80%;
+    height: 80%;
     border: 2px solid rgb(255, 255, 255);
-    padding: 8px 8px;
-    margin: 5px;
-    border-radius: 20px;
+    border-radius: 10px;
     cursor: pointer;
     color: white;
     font-weight: bold;
     text-align: center;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     display: flex;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
 }
 
 .skill-icon {
-    width: 50px;
+    width: 40px;
     height: 50px;
-    object-fit: contain;
 }
 .skill.fire { background-color: crimson; }
 .skill.wind { background-color: mediumseagreen; }

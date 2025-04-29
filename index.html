@@ -21,6 +21,7 @@
             </div>
         </div>
         <div class="games" id="skillsContainer"></div>
+        <div id="skill-hint">Choose your skill!</div>
     </div>
 
     <script>
@@ -133,98 +134,77 @@
 
             winCalculation() {
                 const damage = 100;
-                if (this.mode === "magician") {
-                    if (this.botSkill == "Fire" && this.playerSkill == "Wind") {
-                    this.botHP -= damage * 0.5;
-                    this.playerHP -= damage * 2;
-                    this.winner = this.botName
-                    } else if(this.botSkill == "Wind" && this.playerSkill == "Fire") {
-                    this.botHP -= damage * 2;
-                    this.playerHP -= damage * 0.5;
-                    this.winner = this.playerName
-                    } else if(this.botSkill == "Water" && this.playerSkill == "Fire") {
-                    this.botHP -= damage * 0.5;
-                    this.playerHP -= damage * 2;
-                    this.winner = this.botName
-                    } else if(this.botSkill == "Fire" && this.playerSkill == "Water") {
-                    this.botHP -= damage * 2;
-                    this.playerHP -= damage * 0.5;
-                    this.winner = this.playerName
-                    } else if(this.botSkill == "Earth" && this.playerSkill == "Water") {
-                    this.botHP -= damage * 0.5;
-                    this.playerHP -= damage * 2;
-                    this.winner = this.botName
-                    } else if(this.botSkill == "Water" && this.playerSkill == "Earth") {
-                    this.botHP -= damage * 2;
-                    this.playerHP -= damage * 0.5;
-                    this.winner = this.playerName
-                    } else if(this.botSkill == "Wind" && this.playerSkill == "Earth") {
-                    this.botHP -= damage * 0.5;
-                    this.playerHP -= damage * 2;
-                    this.winner = this.botName
-                    } else if(this.botSkill == "Earth" && this.playerSkill == "Wind") {
-                    this.botHP -= damage * 2;
-                    this.playerHP -= damage * 0.5;
-                    this.winner = this.playerName
-                    } else if(this.botSkill == "Fire" && this.playerSkill == "Earth") {
-                    this.botHP -= damage;
-                    this.playerHP -= damage;
-                    this.winner = "DOUBLE "
-                    } else if(this.botSkill == "Earth" && this.playerSkill == "Fire") {
-                    this.botHP -= damage;
-                    this.playerHP -= damage;
-                    this.winner = "DOUBLE "
-                    } else if(this.botSkill == "Wind" && this.playerSkill == "Water") {
-                    this.botHP -= damage;
-                    this.playerHP -= damage;
-                    this.winner = "DOUBLE "
-                    } else if(this.botSkill == "Water" && this.playerSkill == "Wind") {
-                    this.botHP -= damage;
-                    this.playerHP -= damage;
-                    this.winner = "DOUBLE "
-                    } else {
-                    this.botHP -= damage;
-                    this.playerHP -= damage;
-                    this.winner = "DRAW"
-                    }
-                }
-                if (this.mode === "alter") {
-                    if (this.botSkill == "Rea" && this.playerSkill == "Ilu") {
-                    this.botHP += damage * 1;
-                    this.playerHP -= damage * 2;
-                    this.winner = this.botName
-                    } else if(this.botSkill == "Ilu" && this.playerSkill == "Rea") {
-                    this.botHP -= damage * 2;
-                    this.playerHP += damage * 1;
-                    this.winner = this.playerName
-                    } else if(this.botSkill == "Ilu" && this.playerSkill == "Dre") {
-                    this.botHP += damage * 1;
-                    this.playerHP -= damage * 2;
-                    this.winner = this.botName
-                    } else if(this.botSkill == "Dre" && this.playerSkill == "Ilu") {
-                    this.botHP -= damage * 2;
-                    this.playerHP += damage * 1;
-                    this.winner = this.playerName
-                    } else if(this.botSkill == "Dre" && this.playerSkill == "Rea") {
-                    this.botHP += damage * 1;
-                    this.playerHP -= damage * 2;
-                    this.winner = this.botName
-                    } else if(this.botSkill == "Rea" && this.playerSkill == "Dre") {
-                    this.botHP -= damage * 2;
-                    this.playerHP += damage * 1;
-                    this.winner = this.playerName
-                    } else {
-                    this.botHP -= damage;
-                    this.playerHP -= damage;
-                    this.winner = "DRAW"
-                    }
-                }  
+                const p = this.playerSkill
+                const b = this.botSkill
+                
+                const magRules = new Map([
+                    ["Fire>Wind","bot"],   ["Wind>Fire","player"],
+                    ["Water>Fire","bot"],  ["Fire>Water","player"],
+                    ["Earth>Water","bot"], ["Water>Earth","player"],
+                    ["Wind>Earth","bot"],  ["Earth>Wind","player"]
+                ]);
+                const altRules = new Map([
+                    ["Rea>Ilu","bot"], ["Ilu>Rea","player"],
+                    ["Ilu>Dre","bot"], ["Dre>Ilu","player"],
+                    ["Dre>Rea","bot"], ["Rea>Dre","player"]
+                ]);
 
-                if (this.winner === "DRAW") {
-                    this.consecutiveDraw += 1;
-                } else {
-                    this.consecutiveDraw = 0;
+                let winKey = `${b}>${p}`;
+                let loserKey = `${p}>${b}`;
+                let result;
+
+                if (this.mode === "magician") {
+                    if (magRules.has(loserKey)) { 
+                    // player win
+                    result = "player";
+                    this.botHP  -= damage * 2;
+                    this.playerHP -= damage * 0.5;
+                    }
+                    else if (magRules.has(winKey)) { 
+                    // bot win
+                    result = "bot";
+                    this.botHP  -= damage * 0.5;
+                    this.playerHP -= damage * 2;
+                    }
+                    else if (p !== b) { 
+                    // damage sama kuat
+                    result = "DOUBLE";
+                    this.botHP  -= damage;
+                    this.playerHP -= damage;
+                    }
+                    else {
+                    result = "DRAW";
+                    this.botHP  -= damage;
+                    this.playerHP -= damage;
+                    }
                 }
+                else { // mode === "alter"
+                    if (altRules.has(loserKey)) { 
+                    // player win
+                    result = "player";
+                    this.botHP  -= damage * 2;
+                    this.playerHP += damage * 1;
+                    }
+                    else if (altRules.has(winKey)) { 
+                    // bot win
+                    result = "bot";
+                    this.botHP  += damage * 1;
+                    this.playerHP -= damage * 2;
+                    }
+                    else {
+                    result = "DRAW";
+                    this.botHP  -= damage;
+                    this.playerHP -= damage;
+                    }
+                }
+                // translate winKey ke nama
+                if (result === "player") this.winner = this.playerName;
+                else if (result === "bot") this.winner = this.botName;
+                else this.winner = result; // "DRAW" or "DOUBLE"
+
+                // hitung consecutiveDraw
+                if (this.winner === "DRAW") this.consecutiveDraw++;
+                else this.consecutiveDraw = 0;
                 return this.winner
             }
 
