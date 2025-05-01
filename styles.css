@@ -41,6 +41,33 @@ body,
     margin-left: 10px;
 }
 
+.action-panel {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+/* wadah status */
+.status-display {
+    width: 30%;
+    font-size: 18px;
+    font-weight: bold;
+    color: #000;
+}
+
+/* wadah tombol + hint */
+.skill-panel {
+    width: 65%;
+}
+
+/* hint tetap di kiri atas skill-panel */
+#skill-hint {
+    margin-bottom: 8px;
+}
+
 .summary {
     height: 60vh;
     width: 100%;
@@ -53,8 +80,7 @@ body,
     align-items: left;
     flex-direction: column;
     margin: 0 auto;
-    transition: 
-    background-image 4s ease,
+    transition:     background-image 4s ease,;
 }
 
 .hpbar-container {

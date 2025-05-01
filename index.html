@@ -15,13 +15,20 @@
             <br />
             <div class="hpbar-container">Player HP
                 <div id="playerhpbar" class="hpbar">2000</div>
+                <div id="player-status" class="status-effect">Status: Normal</div>
             </div>
             <div class="hpbar-container">Bot HP
                 <div id="bothpbar" class="hpbar">2000</div>
+                <div id="bot-status" class="status-effect">Status: Normal</div>
             </div>
         </div>
-        <div class="games" id="skillsContainer"></div>
-        <div id="skill-hint">Choose your skill!</div>
+        <div class="action-panel">
+            <div id="status-display" class="status-display">No Status</div>
+            <div class="skill-panel">
+                <div id="skill-hint">Choose your skill</div>
+                <div class="games" id="skillsContainer"></div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -35,6 +42,8 @@
                 this.playerHP = 2000;
                 this.botHP = 2000;
                 this.consecutiveDraw = 0;
+                this.statusEffects = { player: [],bot: [] };
+                this.currentEffect = { player: null, bot: null };
                 this.mode = "magician"; // "magician" or "alter"
                 this.skillUsage = {
                     player: {
@@ -132,6 +141,22 @@
                 return available[Math.floor(Math.random() * available.length)];
             }
 
+            processStatusEffects () {
+                ['player','bot'].forEach(who => {
+                const list = this.statusEffects[who];
+                for (let i = list.length - 1; i >= 0; i--) {
+                    const eff = list[i];
+                    if (eff.type === 'burn') {
+                    this[who + 'HP'] = Math.max(0, this[who + 'HP'] - eff.value);
+                    } else if (eff.type === 'heal') {
+                    this[who + 'HP'] = Math.min(2000, this[who + 'HP'] + eff.value);
+                    }
+                    eff.duration--;
+                    if (eff.duration <= 0) list.splice(i,1);
+                }
+                });   
+            }
+
             winCalculation() {
                 const damage = 100;
                 const p = this.playerSkill
@@ -148,6 +173,14 @@
                     ["Ilu>Dre","bot"], ["Dre>Ilu","player"],
                     ["Dre>Rea","bot"], ["Rea>Dre","player"]
                 ]);
+
+                const buffDefs = {
+                    'Fire>Earth' :   null,            
+                    'Fire>Wind':   { who:'bot',   type:'burn',   duration:2, value:75 },
+                    'Water>Fire':  { who:'player',type:'heal',   duration:2, value:75 },
+                    'Earth>Water': { who:'bot',   type:'shield', duration:3, value:75 },
+                    'Wind>Earth': { who:'player',type:'fury',   duration:3, value:75 },
+                };
 
                 let winKey = `${b}>${p}`;
                 let loserKey = `${p}>${b}`;
@@ -197,6 +230,18 @@
                     this.playerHP -= damage;
                     }
                 }
+
+                [winKey,loserKey].forEach(key => {
+                    const def = buffDefs[key];
+                    if (def) {
+                    this.statusEffects[def.who].push({
+                        type: def.type,
+                        duration: def.duration,
+                        value: def.value
+                    });
+                    }
+                });
+
                 // translate winKey ke nama
                 if (result === "player") this.winner = this.playerName;
                 else if (result === "bot") this.winner = this.botName;
@@ -207,6 +252,47 @@
                 else this.consecutiveDraw = 0;
                 return this.winner
             }
+
+            applyStatusEffect() {
+                if (this.winner === this.playerName) {
+                    this.currentEffect.player = "buff";
+                    this.currentEffect.bot    = null;
+                } else if (this.winner === this.botName) {
+                    this.currentEffect.bot    = "buff";
+                    this.currentEffect.player = null;
+                } else {
+                    // DRAW / DOUBLE → reset
+                    this.currentEffect.player = null;
+                    this.currentEffect.bot    = null;
+                }
+            }
+            
+            updateStatusDisplay() {
+                const statusEl = document.getElementById("status-display");
+
+                // hanya tampilkan di magician mode
+                if (this.mode !== "magician") {
+                    statusEl.textContent = "";   // hilangkan teks
+                    return;
+                }
+
+                // kalau ada efek player aktif, tampilkan detailnya
+                const effs = this.statusEffects.player; 
+                if (effs.length === 0) {
+                    statusEl.textContent = "No Status";
+                } else {
+                // gabungkan semua efek yang sedang berjalan
+                const names = effs.map(e => {
+                    switch(e.type) {
+                        case "burn":   return `Burn (${e.duration} turn)`;
+                        case "shield": return `Shield (${e.duration} turn)`;
+                        case "fury":   return `Fury (${e.duration} turn)`;
+                        case "heal":   return `Heal (${e.duration} turn)`;
+                    }
+                });
+                statusEl.textContent = names.join(", ");
+                }
+            }            
 
             matchResult(){
                 if(this.winner !== "DRAW"){
@@ -248,23 +334,27 @@
         if (game.skillUsage.bot[game.mode][botSkill] > 0)
         game.skillUsage.bot[game.mode][botSkill]--;
 
-      // initial console
-      console.log(`player: ${game.getplayerSkill} VS bot: ${game.getbotSkill}`);
+        // initial console
+        game.processStatusEffects();
+        console.log(`player: ${game.getplayerSkill} VS bot: ${game.getbotSkill}`);
 
-      // calculate
-      const win = game.winCalculation();
-      console.log(`winner = ${win}`);
-      console.log(`consecutiveDraw: ${game.consecutiveDraw}`);
-      console.log(`result = ${game.matchResult()}`);
+        // calculate
+        const win = game.winCalculation();
+        console.log(`winner = ${win}`);
+        console.log(`consecutiveDraw: ${game.consecutiveDraw}`);
+        console.log(`result = ${game.matchResult()}`);
 
-      // update UI
-      game.updateHealthBars();
-      document.getElementById("inGame").textContent = "...";
-      document.getElementById("result").textContent = "...";
+        // update UI
+        game.processStatusEffects();
+        game.updateHealthBars();
+        document.getElementById("inGame").textContent = "...";
+        document.getElementById("result").textContent = "...";
+        game.applyStatusEffect();
+        game.updateStatusDisplay();
 
-      setTimeout(() => {
+        setTimeout(() => {
         document.getElementById("inGame").textContent =
-          `${game.getplayerSkill} VS ${game.getbotSkill}`;
+            `${game.getplayerSkill} VS ${game.getbotSkill}`;
         document.getElementById("result").textContent = game.matchResult();
 
         // end conditions or mode switch
@@ -272,31 +362,31 @@
             document.getElementById('result').textContent = (game.playerHP === 0)
             ? `${game.botName} has won the battle!` 
             : `${game.playerName} has won the battle!`;
-          document.getElementById("skillsContainer").innerHTML = "<p>GAME OVER</p>";
-          return;
+            document.getElementById("skillsContainer").innerHTML = "<p>GAME OVER</p>";
+            return;
         }
         if (game.consecutiveDraw >= 2) {
-          alert('There is a dimensional rift, watch your step.');
-          game.switchMode();
-          return;
+            alert('There is a dimensional rift, watch your step.');
+            game.switchMode();
+            return;
         }
         if (game.mode === 'alter' && game.getAvailableSkills().length === 0) {
-          alert('There is a dimensional rift, watch your step.');
-          game.switchMode();
-          return;
+            alert('There is a dimensional rift, watch your step.');
+            game.switchMode();
+            return;
         }
         if (game.mode === 'magician') {
-          const total = Object.values(game.skillUsage.player.magician)
+            const total = Object.values(game.skillUsage.player.magician)
             .reduce((a,b)=>a+b,0);
-          if (total === 0) {
+        if (total === 0) {
             alert('Game Over!.');
             document.getElementById("skillsContainer").innerHTML = "<p>GAME OVER</p>";
             return;
-          }
+        }
         }
         game.updateSkillButtons();
-      }, 1000);
-    }
-  </script>
+    }, 1000);
+}
+    </script>
 </body>
 </html>
