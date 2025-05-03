@@ -34,6 +34,7 @@
     <script>
         class Start {
             constructor(parameter) {
+                this.isProcessing = false;
                 this.playerName = "Player";
                 this.botName = "Enemy";
                 this.playerSkill;
@@ -42,7 +43,7 @@
                 this.playerHP = 2000;
                 this.botHP = 2000;
                 this.consecutiveDraw = 0;
-                this.statusEffects = { player: [],bot: [] };
+                this.statusEffects = { player: [] ,bot: [] };
                 this.currentEffect = { player: null, bot: null };
                 this.mode = "magician"; // "magician" or "alter"
                 this.skillUsage = {
@@ -85,6 +86,7 @@
             }
             
             updateSkillButtons() {
+                console.log('Updating skills:', this.getAvailableSkills());
                 const cont = document.getElementById("skillsContainer");
                 cont.innerHTML = "";
                 cont.className = "games"; // Reset classes
@@ -268,31 +270,20 @@
             }
             
             updateStatusDisplay() {
-                const statusEl = document.getElementById("status-display");
-
-                // hanya tampilkan di magician mode
-                if (this.mode !== "magician") {
-                    statusEl.textContent = "";   // hilangkan teks
-                    return;
-                }
-
-                // kalau ada efek player aktif, tampilkan detailnya
-                const effs = this.statusEffects.player; 
-                if (effs.length === 0) {
-                    statusEl.textContent = "No Status";
-                } else {
-                // gabungkan semua efek yang sedang berjalan
-                const names = effs.map(e => {
-                    switch(e.type) {
-                        case "burn":   return `Burn (${e.duration} turn)`;
-                        case "shield": return `Shield (${e.duration} turn)`;
-                        case "fury":   return `Fury (${e.duration} turn)`;
-                        case "heal":   return `Heal (${e.duration} turn)`;
-                    }
-                });
-                statusEl.textContent = names.join(", ");
-                }
-            }            
+                const updateStatus = (who, elementId) => {
+                    const effs = this.statusEffects[who];
+                    const element = document.getElementById(elementId);
+                    element.innerHTML = effs.map(e => `
+                        <div class="status-item ${e.type}">
+                            <span class="status-icon">⚡</span>
+                            ${e.type.toUpperCase()} (${e.duration})
+                        </div>
+                    `).join('');
+                };
+                
+                updateStatus('player', 'player-status');
+                updateStatus('bot', 'bot-status');
+            }  
 
             matchResult(){
                 if(this.winner !== "DRAW"){
@@ -318,7 +309,11 @@
         game.updateHealthBars();
         game.updateSkillButtons();
 
-        function pickSkill(parameter) {
+        function pickSkill(parameter) {       
+        // no spam klik
+        if(game.isProcessing) return;
+        game.isProcessing = true;
+        
         // sisa skill
         if (game.skillUsage.player[game.mode][parameter] <= 0) return;
 
@@ -385,8 +380,9 @@
         }
         }
         game.updateSkillButtons();
-    }, 1000);
-}
+        game.isProcessing = false;
+        }, 1000);
+        }
     </script>
 </body>
 </html>
